@@ -1,0 +1,40 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+    public float speed;
+    public Joystick joystick;
+    Rigidbody2D rb;
+    Vector2 move;
+    float lastZAxis;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    private void Update()
+    {
+        move.x = joystick.Horizontal;
+        move.y = joystick.Vertical;        
+        float xAxis = joystick.Horizontal;
+        float yAxis = joystick.Vertical;
+        float zAxis = Mathf.Atan2(xAxis, yAxis) * Mathf.Rad2Deg;        
+
+        if (zAxis > 0 || zAxis <0)
+        {
+            transform.eulerAngles = new Vector3(0, 0, -zAxis);
+            lastZAxis = -zAxis;
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, 0, lastZAxis);            
+        }        
+    }
+    private void FixedUpdate()
+    {
+        rb.MovePosition(rb.position + move * speed * Time.fixedDeltaTime);
+    }
+}
